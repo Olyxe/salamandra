@@ -22,8 +22,10 @@ func miShell() {
 			return
 		}
 
+		flg := color.YellowString("+main")
+
 		// Mostrar el prompt con el directorio actual en color magenta
-		fmt.Print(color.MagentaString("%s > ", dir))
+		fmt.Print(color.MagentaString("%s > ", dir), flg, " ")
 
 		// Leer la entrada del usuario
 		scanner := bufio.NewScanner(os.Stdin)
