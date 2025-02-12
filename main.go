@@ -6,10 +6,18 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
 // Funci�n que ejecuta el comando como una shell simple
 func ejecutarComando(comando string) {
+	// Si el comando es "exit", salir de la shell sin ejecutarlo
+	if strings.TrimSpace(comando) == "exit" {
+		color.Yellow("Saliendo de la shell...")
+		os.Exit(0) // Salir del programa
+	}
+
 	// Crear el comando
 	cmd := exec.Command("sh", "-c", comando)
 
@@ -30,35 +38,31 @@ func ejecutarComando(comando string) {
 	// Leer y mostrar la salida del comando
 	scanner := bufio.NewScanner(stdout)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		// Colorear la salida de los comandos en verde
+		color.Green(scanner.Text())
 	}
 
 	// Esperar a que termine el comando
 	err = cmd.Wait()
 	if err != nil {
-		fmt.Println("Error al esperar el comando:", err)
+		color.Red("Error al esperar el comando: %v", err)
 	}
 }
 
 // Funci�n que maneja el bucle de la shell
 func miShell() {
-	fmt.Println("Bienvenido a la shell Go. Escribe 'exit' para salir.")
+	// Colorear el mensaje de bienvenida
+	color.Cyan("Bienvenido a la shell Go. Escribe 'exit' para salir.")
 
 	// Bucle para leer comandos
 	for {
-		// Mostrar un prompt
-		fmt.Print(">>> ")
+		// Mostrar un prompt colorido en la misma l�nea
+		fmt.Print("\r>>> ")
 
 		// Leer la entrada del usuario
 		scanner := bufio.NewScanner(os.Stdin)
 		scanner.Scan()
 		comando := scanner.Text()
-
-		// Si el comando es "exit", salir de la shell
-		if strings.TrimSpace(comando) == "exit" {
-			fmt.Println("Saliendo de la shell...")
-			break
-		}
 
 		// Ejecutar el comando
 		ejecutarComando(comando)
