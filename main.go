@@ -30,7 +30,7 @@ func MostrarPrompt() {
 }
 
 // Funci�n que inicia la shell interactiva
-func miShell() {
+func salamandra() {
 	color.Cyan("Bienvenido a la shell Go. Escribe 'exit' para salir.")
 
 	for {
@@ -48,5 +48,5 @@ func miShell() {
 }
 
 func main() {
-	miShell()
+	salamandra()
 }
