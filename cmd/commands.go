@@ -11,6 +11,7 @@ import (
 
 // Historial de comandos
 var history []string
+var estadoComando bool
 
 // EjecutarComando ejecuta comandos externos e internos en la shell
 func EjecutarComando(comando string) {
@@ -38,12 +39,12 @@ func EjecutarComando(comando string) {
 	// Capturar la salida est�ndar y de error
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		color.Red("Error al capturar la salida: %v", err)
+		color.Red("Error al capturar la salida est�ndar: %v", err)
 		return
 	}
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		color.Red("Error al capturar el error: %v", err)
+		color.Red("Error al capturar la salida de error: %v", err)
 		return
 	}
 
@@ -51,6 +52,7 @@ func EjecutarComando(comando string) {
 	err = cmd.Start()
 	if err != nil {
 		color.Red("Error al iniciar el comando: %v", err)
+		estadoComando = false
 		return
 	}
 
@@ -70,5 +72,8 @@ func EjecutarComando(comando string) {
 	err = cmd.Wait()
 	if err != nil {
 		color.Red("Error al ejecutar el comando: %v", err)
+		estadoComando = false
+	} else {
+		estadoComando = true
 	}
 }
