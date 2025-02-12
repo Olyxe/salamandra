@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"math"
 	"strconv"
 	"strings"
 
@@ -44,8 +45,10 @@ func EjecutarOperacionMatematica(comando string) {
 			return
 		}
 		resultado = num1 / num2
+	case "^":
+		resultado = math.Pow(num1, num2)
 	default:
-		color.Red("Error: Operador no v�lido. Usa +, -, * o /")
+		color.Red("Error: Operador no v�lido. Usa +, -, *, / o ^")
 		return
 	}
 
