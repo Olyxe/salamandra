@@ -1,57 +1,71 @@
 package main
 
 import (
-	"flag"
+	"bufio"
 	"fmt"
-
-	"github.com/fatih/color"
+	"os"
+	"os/exec"
+	"strings"
 )
 
-// Funci�n de saludo
-func saludar(nombre string) {
-	cyan := color.New(color.FgCyan).SprintFunc()
-	green := color.New(color.FgGreen).SprintFunc()
+// Funci�n que ejecuta el comando como una shell simple
+func ejecutarComando(comando string) {
+	// Crear el comando
+	cmd := exec.Command("sh", "-c", comando)
 
-	if nombre != "" {
-		fmt.Printf(green("�Hola, %s!\n"), cyan(nombre))
-	} else {
-		fmt.Println("�Hola, mundo!")
-	}
-}
-
-// Funci�n para mostrar la ayuda personalizada
-func mostrarAyuda() {
-	blue := color.New(color.FgBlue).SprintFunc()
-	fmt.Println(blue("Uso: mi-cli [opciones]"))
-	fmt.Println("\nOpciones:")
-	fmt.Println("  --nombre  <nombre>    Saludar con el nombre proporcionado")
-	fmt.Println("  --saludar            Saludar al usuario")
-	fmt.Println("  --help               Mostrar esta ayuda")
-}
-
-func main() {
-	// Crear los par�metros de la l�nea de comandos
-	nombre := flag.String("nombre", "", "El nombre del usuario")
-	activarSaludo := flag.Bool("saludar", false, "Activar el saludo")
-	help := flag.Bool("help", false, "Mostrar ayuda")
-
-	// Parsear los argumentos
-	flag.Parse()
-
-	// Si el usuario solicita ayuda, mostrarla
-	if *help {
-		mostrarAyuda()
+	// Crear un buffer para capturar la salida del comando
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		fmt.Println("Error al capturar la salida:", err)
 		return
 	}
 
-	// Si el flag --saludar es true, llamar a la funci�n saludar
-	if *activarSaludo {
-		saludar(*nombre)
-	} else if *nombre != "" {
-		// Si solo se pasa el nombre, mostrarlo
-		fmt.Printf("Nombre proporcionado: %s\n", *nombre)
-	} else {
-		// Si no se pasa ning�n par�metro, mostrar un mensaje predeterminado
-		color.Red("No se ha proporcionado un nombre ni el comando --saludar.")
+	// Ejecutar el comando
+	err = cmd.Start()
+	if err != nil {
+		fmt.Println("Error al iniciar el comando:", err)
+		return
 	}
+
+	// Leer y mostrar la salida del comando
+	scanner := bufio.NewScanner(stdout)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+
+	// Esperar a que termine el comando
+	err = cmd.Wait()
+	if err != nil {
+		fmt.Println("Error al esperar el comando:", err)
+	}
+}
+
+// Funci�n que maneja el bucle de la shell
+func miShell() {
+	fmt.Println("Bienvenido a la shell Go. Escribe 'exit' para salir.")
+
+	// Bucle para leer comandos
+	for {
+		// Mostrar un prompt
+		fmt.Print(">>> ")
+
+		// Leer la entrada del usuario
+		scanner := bufio.NewScanner(os.Stdin)
+		scanner.Scan()
+		comando := scanner.Text()
+
+		// Si el comando es "exit", salir de la shell
+		if strings.TrimSpace(comando) == "exit" {
+			fmt.Println("Saliendo de la shell...")
+			break
+		}
+
+		// Ejecutar el comando
+		ejecutarComando(comando)
+	}
+}
+
+func main() {
+	// Iniciar la shell
+	miShell()
 }
