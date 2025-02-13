@@ -52,6 +52,11 @@ func EjecutarComando(comando string) {
 		return
 	}
 
+	if strings.HasPrefix(comando, "neofetch") {
+		mostrarNeofetch(comando)
+		return
+	}
+
 	// Si no es un comando interno, ejecutar como comando externo
 	cmd := exec.Command("sh", "-c", comando)
 

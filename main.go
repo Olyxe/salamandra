@@ -75,6 +75,6 @@ func salamandra() {
 }
 
 func main() {
-	//cmd.CargarPlugins()
+
 	salamandra()
 }
