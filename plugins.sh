@@ -7,12 +7,14 @@ echo "Elija el nombre de tu plugin"
 read name
 echo "Buscando $name"
 
-if [ "$name" == "hello" ]; then
+
+
+if [ "$name" == "hello" ]; then #Change "hello" 
     echo "$name encontrado"
     echo "$name instalando"
     
     # Reemplazar el archivo si ya existe
-    curl -L -o ./plugins/hello.go https://raw.githubusercontent.com/Olyxe/salamandra/refs/heads/main/plugins/hello.go
+    curl -L -o ./plugins/$name.go https://raw.githubusercontent.com/Olyxe/salamandra/refs/heads/main/plugins/hello.go #Change the curl link and directory
     
     
     # Comprobar si el archivo fue descargado correctamente
@@ -25,7 +27,9 @@ if [ "$name" == "hello" ]; then
     fi
 
     echo "Empezando a construir $name"
-    go build -buildmode=plugin -o ./plugins/hello.so plugins/hello.go
+    go build -buildmode=plugin -o ./plugins/hello.so plugins/hello.go #change the directory name files
 else
     echo "$name no existe"
 fi
+
+#Copy the last conditional and paste, add the changes for you plugin
